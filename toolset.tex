@@ -1,0 +1,244 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\section{Toolset}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Unary Math}
+
+\begin{description}
+	\item[Addition: $x^ny^m\mapsto x^{n+m}$:]
+		\begin{verbatim}
+			s/y/x/g
+		\end{verbatim}
+
+	\item[Duplication: $x^n\mapsto x^{2n}$:]
+		\begin{verbatim} s/xx*/&&/ \end{verbatim}
+
+	\item[Assignment: $x^n\mapsto x^ny^m$:]
+
+		This can be achieved by an intermediate representation containing a pipe in
+		the middle of a duplication: $x^n\texttt{|}x^n$, that way each of the
+		{\tt x}s after the pipe can be converted one by one into {\tt y}s.  At the
+		i-th iteration we will have:
+		$x^ny^{i-1}\texttt{|}xx^{n-i} \mapsto x^ny^i\texttt{|}x^{n-i}$.
+
+		\begin{Verbatim}
+			s/x*/&|&/; :a; s/|x/y|/; ta; s/|//
+		\end{Verbatim}
+
+	\item[Multiplication: $x^ny^m\mapsto x^{n(m+1)}$:]
+
+		Since $n\cdot m=n(m-1)+n$, this can be solved by consuming one {\tt y}
+		at a time by repeating the substitution $x^ny^m \equiv x^nyy^{m-1}
+		\mapsto	x^ny^{m-1}x^n$ while there are {\tt y} availables.  The last
+		substitution will then be $x^nyx^{n(m-1)} \mapsto x^nx^nx^{n(m-1)}
+		\equiv x^{n(m+1)}$:
+
+		\begin{Verbatim}
+			:a; s/\(x*\)y\(y*\)/\1\2\1/; ta
+		\end{Verbatim}
+
+		To calculate $n\cdot m$ instead of $n(m+1)$, we can either delete one
+		{\tt y} if we know there is at least one (\verb|s/y//|); or we can place
+		a separator between the {\tt x}s and the {\tt y}s, then at the iteration
+		we will have $x^n\texttt{|yx}^{n(m-1)} \mapsto x^n\texttt{|x}^{nm}$:
+
+		\begin{Verbatim}
+			s/x*/&|/
+			:a; s/\(x*\)|y\(y*\)/\1|\2\1/; ta
+			s/x*|//
+		\end{Verbatim}
+
+	\item[Factorization: $\texttt{x}^n \mapsto
+		\texttt{|x}^{p_1}\texttt{|x}^{p_2}\texttt{|}
+		\ldots\texttt{|x}^{p_k}\texttt{|}$:]
+
+		We can use the following code to compute the prime numbers
+		$p_1, p_2\ldots p_n$, where $n=\prod_{i=1}^k p_i$.
+		Additionally this prime factors will be sorted
+		decreasingly, assuring a unique decomposition.
+
+		\begin{Verbatim}
+			s/x*/|&|/; :a
+			  s/|\(xxx*\)\(\1\1*\)|/|\1<x>\2|/
+			  s/\(x*\)<\(x*\)>\1/\1<\2x>/
+			  s/<\(x*\)>|/|\1|/
+			ta
+		\end{Verbatim}
+
+		\begin{enumerate}
+			\item On the first line we wrap the {\tt x}s between pipes just to
+				make processing simple, it is not required though.
+
+			\item Then for a block of length $n$ this is when we find a 
+				divisor $d>1$ of $n$, the backreference is placed twice to ensure
+				$d<n$.  Since the algorithm for matching regular expressions is
+				greedy, \verb|\1| will match the largest divisor smaller than $n$,
+				meaning that $n/d$ is the smallest prime that divides $n$.
+
+				The block $\texttt{|x}^n\texttt{|}$ will be converted into
+				$\texttt{|x}^d\texttt{<x>x}^{n-d}\texttt{|}$.
+
+			\item The next substitution gradually substracts $d$ from the
+				``number'' after the \verb|>| symbol, adding one before it.
+				In other words we just divided $n$ over $d$ using repeated
+				substraction.
+				So after applying this rule as many times as possible, we obtain:
+				$\texttt{|x}^d\texttt{<x}^{n/d}\texttt{>|}$.
+
+			\item And the final rule, applicable only when the division has
+				completed, is to convert it back to the ``pipe separated
+				unary format'' so that we can proceed to find newer factors:
+				$ \texttt{|x}^n\texttt{|} \mapsto \ldots
+				\mapsto \texttt{|x}^d\texttt{|x}^{n/d}\texttt{|}$
+		\end{enumerate}
+
+	\item[Logarithm: $x^n\mapsto y^{\lfloor\log_2 n\rfloor}$:]
+
+		The idea here is to divide by 2 repeatedly until {\tt xx} can no longer
+		be found.  Note that we divide by 2 rounding down by substituting a
+		single (final) {\tt x} in the pattern at line 2 to an empty string.
+		There may be a remaining {\tt x} which we remove at the end.
+
+		\begin{Verbatim}
+			:a; /xx/ {
+			  s/x\(x\|\)/\1/g
+			  s/^/y/
+			ba }
+			s/x//
+		\end{Verbatim}
+
+	\item\todo{Test and write about minimum and maximum}
+	% Minimum: x^n|x^m -> x^{\min\{n,m\}}: s/\(x*\)x*|\1x*/\1/
+	% (tested) Maximum: x^n|x^m -> x^{\max\{n,m\}}: s/\(x*\)|\(\1\(x*\)\|x*\)/\1\3/
+
+	\item[Fibonacci: $\texttt{x}^n\mapsto \texttt{x}^{\fib n}$:]
+
+		Fibonacci is usually defined recursively by $\fib n = \fib (n-1) +
+		\fib (n-2)$ with the base case $\fib n = n$ when $n<2$.  So in the
+		implementation presented here we first handle the base case first by
+		not adding pipes (which disables all substitutions on the following
+		lines).
+
+		The recursive case is handling by having our pattern space with the
+		format $\texttt{x}^{n-i}\texttt{|x}^{\fib i-1}\texttt{|x}^{\fib i}$,
+		and applying the inductive substitution $(a,b)\mapsto (b,a+b)$
+		which increases by 1 the value at $i$:
+		$\texttt{x}^{n-i}\texttt{|x}^{\fib i-1}\texttt{|x}^{\fib i}$
+		$\mapsto$
+		$\texttt{x}^{n-i-1}\texttt{|x}^{\fib i}\texttt{|x}^{\fib i+1}$.
+
+		When $i$ reaches $n$, that is when there are no more {\tt x}s before
+		the first pipe, we will have $\texttt{|x}^{\fib n-1}\texttt{|x}^{\fib n}$,
+		so at that point we just leave the text after the last pipe:
+
+		\begin{Verbatim}
+			/xx/ s/x$/||x/
+			:a; s/x|\(x*\)|\(x*\)/|\2|\1\2/; ta
+			s/.*|//
+		\end{Verbatim}
+
+\end{description}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Binary Math}
+
+\todo{Write about binary addition.}
+
+\todo{Write about truncation.}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Lookup Tables}
+
+Many of the most complex programs written in \sed use the power of
+backreferences in order to do translations which otherwise could be very
+complex, here we will focus on two very practical use cases, converting from
+decimal numbers to unary and viceversa.
+
+\subsubsection{Decimal to Unary}
+
+Let's say we want to convert the digits of the number {\tt 42} to unary:
+{\tt |xxxx|xx}, we can use the following short program composed of just three
+lines:
+
+\begin{Verbatim}
+	s/./|0123456789&!/g
+	s/\(.\)[0-9]*\1//g
+	:a; s/|!/|/g; s/.!/!x/g; ta
+\end{Verbatim}
+
+\begin{enumerate}
+	\item with the first substitution we would obtain the seemingly useless
+		string: {\tt |01234567894!|01234567892!}, yet there is an interesting
+		pattern going on.
+	\item If for each block we were to remove the duplicated numbers and
+		everything in between, we would obtain {\tt |0123!|01!}, and that's
+		what the second line does.
+
+		Note that the number of digits left matches the corresponding digit
+		that we had before.  That's because we inserted all the digits in order.
+
+	\item Finally to obtain the {\tt x}s, we can iterate the exclamation marks
+		to the left substituting the digits by {\tt x}s until they reach the
+		pipes (when we remove them).
+\end{enumerate}
+
+\subsubsection{Unary to Decimal}
+\todo{Copiar desde la cuadernola la explicaci\'on de las reverse lookup tables.}
+
+\subsubsection{Generic Substitutions}
+\todo{Escribir c\'omo se podr\'{\i}a usar una lookup table en general para
+hacer una substitución arbitraria.}
+% the example usually seen for "sed lookup tables" is that of substituting
+% numbers via 0zero1one2two3three4four5five6six7seven8eight9nine, there has
+% to be another simple example.
+%   Maybe converting from hexa to binary requiring only two commands.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Debugging}
+
+When developing programs in \sed, more often than not we end up with mountains
+of completely unreadable line noise which at a certain point, sometimes even
+way before to be completed, leaves us in a state of absolute confusion.  Is at
+this point that we really need to understand what's going on.
+
+One of the simplest ways to try to understand the code, is to print the content
+of the pattern space, in the most simple form we just place the {\tt p} command
+whenever we want to, however if we want to print it at several places and
+specially if there are newlines inside the pattern space, we might want to use
+something like this instead:
+
+\begin{Verbatim}
+	... lots of code ...
+	s/.*/At xyz: <<&>>/p;  s/[^<]*<<//;  s/>>$//
+	... lots of code ...
+\end{Verbatim}
+
+Note that by using the previous code snippet we ``set to true'' the state of
+whether a substitution was applied at that point.  If we don't care about its
+state then we might just use that code, if not we have to maintain it by
+basically duplicating our code around an ``if then else'':
+
+\begin{Verbatim}
+	... lots of code ...
+	tTxyz; s/.*/At xyz (F): <<&>>/p; s/[^<]*<<//; s/>>$//; tFxyz
+	:Txyz; s/.*/At xyz (T): <<&>>/p; s/[^<]*<<//; s/>>$//; :Fxyz
+	... lots of code ...
+\end{Verbatim}
+
+This works because if the flag was true, it will jump to the {\tt (T)} part,
+with these new substitutions restoring the flag to true.
+Oterwise the conditional jump to {\tt Fxyz} will reset it to false
+before continuing.
+
+If the hold space has to be printed as well, then one simple solution is
+logging the pattern space, followed by the {\tt x} command, that logging
+the hold space and finally switching back the spaces with the {\tt x}
+command once again.
+
+\todo{add more tools}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Jump Tables}
+
+\todo{complete jump tables}

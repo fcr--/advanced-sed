@@ -1,0 +1,27 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Support for TODO generation:
+% \todo{Thing that has to be done.}
+%     - Adds a box at the current location showing the text inside a rectangle
+% \todos
+%     - Prints a list of the \todo items in the document referencing the page
+%       numbers where they were mentioned.
+%     - Note: Must be used after the last \todo.
+
+\def\todounexpandeditems{}
+\def\todoitem{\noexpand\todoitem}
+\def\todo#1{
+  \fbox{{\textbf TODO:} #1}
+  \edef\todounexpandeditems{\todounexpandeditems\todoitem Pg \thepage: #1}}
+\def\todos{
+  \begin{itemize}
+    \def\todoitem{\item}
+    \todounexpandeditems
+  \end{itemize}}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% Fibonacci function in the same style as \max or \lim:
+\newcommand{\fib}{\mathop{\mathrm{fib}}}
+
+% The word `sed' in monospace font
+\newcommand{\sed}{{\tt sed}}

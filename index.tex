@@ -1,0 +1,59 @@
+\documentclass[12pt,a4paper]{article}
+\usepackage{graphicx}
+% For Verbatim environment and fvset:
+\usepackage{fancyvrb}
+% For reduced margin between Verbatims and captions
+%\usepackage[skip=3mm]{caption}
+\setlength{\abovecaptionskip}{-4mm}
+\setlength{\belowcaptionskip}{0mm}
+
+\fvset{frame=single, framesep=2mm, numbers=left, numbersep=2mm, tabsize=0}
+\author{Francisco Castro}
+\title{Advanced Sed}
+
+\include{prelude}
+
+\begin{document}
+\maketitle
+
+\section{Table of Contents}
+\tableofcontents
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Introduction}
+
+I started writing this text in September 2021, several decades well after \sed
+was invented, yet even though there were a few books among other resources
+providing introductions and lists of use cases where \sed is still a relatively
+good idea in the context of a simple shell script.  Here we have another goal,
+to explore this tool as an esoteric programming language, trying to exploit it
+in order to achive uses way outside its imagined scope when it was created.
+
+\todo{Write about resources to start with sed, including the standard}
+
+\todo{Write about sed memory, maybe in another section?}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Languages}
+
+In this section we will provide the set of definitions from Language Theory
+used in this text.  This is only done in order to have a common language.
+\subsection{Regular Expressions}
+\subsection{Parsing Expression Grammar}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\include{toolset}
+\include{advancedexamples}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Appendices}
+\appendix
+
+\section{TODOs}
+\todos
+
+\end{document}
