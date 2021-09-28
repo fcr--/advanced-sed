@@ -28,6 +28,7 @@ jobs:
       - uses: xu-cheng/texlive-action/small@v1
         with:
           run: |
+            sed -i 's/^\\todos/(disabled on deploy)%\\todos/' index.tex
             pdflatex index.tex
             pdflatex index.tex
             pdflatex index.tex
