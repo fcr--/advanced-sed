@@ -1,16 +1,16 @@
-#!/bin/sh
+#!/bin/bash
 
 sedcode() {
   FILE=$1
   NAME=$2
-  CODE="$(${SED-sed} -n "
-  1,/% *sedcode *$NAME *:/ d
-    s/.*\\\\verb\\(.\\)\\(.*\\)\\1.*/\\2/p; ta
-    /\\\\begin{[Vv]erbatim}/,/\\\\end{[Vv]erbatim}/ {
-      /\\\\end{[Vv]erbatim}/ q
-      /\\\\begin{[Vv]erbatim}/!p
+  CODE=$(${SED-sed} -n '
+  1,/% *sedcode *'"$NAME"' *:/ d
+    s/.*\\verb\(.\)\(.*\)\1.*/\2/p; ta
+    /\\begin{[Vv]erbatim}/,/\\end{[Vv]erbatim}/ {
+      /\\end{[Vv]erbatim}/ q
+      /\\begin{[Vv]erbatim}/!p
     }; d
-  :a;q" "$FILE".tex)"
+  :a;q' "$FILE".tex)
 }
 
 expect() {
