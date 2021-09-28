@@ -3,14 +3,15 @@
 sedcode() {
   FILE=$1
   NAME=$2
-  CODE=`sed -n '
+  sedparsingcode='
     1, /% sedcode '"$NAME"':/ d
     s/.*\\\\verb\(.\)\(.*\)\1.*/\2/p; ta
     /\\\\begin{[Vv]erbatim}/, /\\\\end{[Vv]erbatim}/ {
       /\\\\end{[Vv]erbatim}/ q
       /\\\\begin{[Vv]erbatim}/!p
     }; d
-    :a;q' "$FILE".tex`
+    :a;q'
+  CODE=`sed -n "$sedparsingcode" "$FILE".tex`
 }
 
 expect() {

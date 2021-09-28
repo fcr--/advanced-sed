@@ -30,7 +30,7 @@ jobs:
           run: |
             # Run test cases first:
             bash test.sh
-            # The disable the \todos command, as it does not work for some reason:
+            # Then disable the \todos command, as it does not work for some reason:
             sed -i 's/^\\todos/(disabled on deploy)%\\todos/' index.tex
             # Once to generate the table of contents, the second time to correct the page numbers, and the third time for good measure:
             pdflatex index.tex
