@@ -58,8 +58,30 @@ cannot be processed independently of one another.
 \subsection{Vigen\`ere}
 
 The Vigen\`ere cipher is one of the basic methods shown in most introductory
-texts about classic criptography, it is based on the Caesar cipher in which the
-encryption is done.
+texts about classic criptography.  It is based on the Caesar cipher in which the
+encryption is done by ``rotating'' or ``shifting'' the characters a given
+number of times.
+
+For instance if we rotate the caracters by 1 position in a Caesar cipher,
+{\tt AMAZING} becomes {\tt BNBAJOH} (each character is substituted by the
+next character in the alphabet).  If we use 2 positions, as expected we would
+be substituting {\tt A} to {\tt C}, {\tt B} to {\tt D} and so on:
+{\tt COCBKPI} for the example above.
+
+Such a simple substitution could be trivially performed in \sed with the
+{\tt y} command.
+
+With Vigen\'ere however, the number of rotations varies for each character and
+it is defined by a ``key'' text.  We start the encryption process by repeating
+the key until its length is greater or equal to the clear text.  Then each
+character of the clear text will have a corresponding character of the key.
+If that of the key is an {\tt A} then no rotation is performed,
+for {\tt B} we rotate 1 position, for {\tt C} 2 positions in the alphabet,
+3 for {\tt D}, and so on.  This means that the {\tt y} command is now out of
+the question.
+
+We now present an implementation where the key is sent as the first line,
+followed by the text to encrypt:
 
 % sedcode vigenere:
 \begin{Verbatim}
@@ -73,6 +95,17 @@ encryption is done.
 	  ta
 	s/<.*//
 \end{Verbatim}
+
+\begin{enumerate}
+	\item The key is stored into the hold space, and we proceed to the next
+		line without any output: {\tt d}.
+	\item We begin by appending to the clear text (in the pattern space) a
+		newline and the key that we have stored in the hold space.  Before each
+		of the lines of our pattern space we append the {\tt <ABC...XYZA>} text,
+		which we will later use for the rotations.
+	\item \todo{complete}
+\end{enumerate}
+
 
 \todo{add more examples}
 
