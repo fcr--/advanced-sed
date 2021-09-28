@@ -87,7 +87,7 @@ followed by the text to encrypt:
 \begin{Verbatim}
 	1{ h; d }
 	G; s/\(^\)\|\n/&<ABCDEFGHIJKLMNOPQRSTUVWXYZA>/g
-	:a;p
+	:a
 	  s/\(<[A-Z]*>\)\([^A-Z]\)\(.*\n\)/\2\1\3/
 	  s/\(<.*\(.\)\(.\).*>\)\2\(.*<.*\(.\)\(.\).*>\)\6/\1\3\4\5/
 	  /\n<.*>A/  s/\(<.*>\)\(.\)\(.*>\)./\2\1\3/
@@ -103,6 +103,10 @@ followed by the text to encrypt:
 		newline and the key that we have stored in the hold space.  Before each
 		of the lines of our pattern space we append the {\tt <ABC...XYZA>} text,
 		which we will later use for the rotations.
+
+		Note that on some implementations the precedence order of the carret
+		and the ``or'' operator (\verb:\|:) may be different.  That why we
+		enclosed the caret into a group.
 	\item \todo{complete}
 \end{enumerate}
 
