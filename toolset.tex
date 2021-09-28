@@ -132,6 +132,7 @@
 		the first pipe, we will have $\texttt{|x}^{\fib n-1}\texttt{|x}^{\fib n}$,
 		so at that point we just leave the text after the last pipe:
 
+		% sedcode fibonacci:
 		\begin{Verbatim}
 			/xx/ s/x$/||x/
 			:a; s/x|\(x*\)|\(x*\)/|\2|\1\2/; ta

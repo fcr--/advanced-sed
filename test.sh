@@ -25,6 +25,10 @@ expect() {
 LF='
 '
 
+sedcode toolset fibonacci
+RES=`echo "${LF}x${LF}xx${LF}xxx${LF}xxxx${LF}xxxxx${LF}xxxxxx" | sed "$CODE"`
+expect "${LF}x${LF}x${LF}xx${LF}xxx${LF}xxxxx${LF}xxxxxxxx"
+
 sedcode advancedexamples uniq
 RES=`echo a-a-b-c-c-c | tr - '\n' | sed "$CODE"`; expect "a${LF}b${LF}c"
 RES=`echo "a${LF}a" | sed "$CODE"`; expect a
