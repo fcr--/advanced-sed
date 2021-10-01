@@ -96,6 +96,11 @@ followed by the text to encrypt:
 	s/<.*//
 \end{Verbatim}
 
+The state of this program is composed of the hold space which is used for
+storing the encryption key, and the pattern space of the form: \emph{encrypted
+text} \verb|<ABC...XYZA>| \emph{remaining plain text} \verb|\n|
+\verb|<ABC...XYZA>| \emph{remaining key}.
+
 \begin{enumerate}
 	\item The key is stored into the hold space, and we proceed to the next
 		line without any output: {\tt d}.
@@ -107,7 +112,12 @@ followed by the text to encrypt:
 		Note that on some implementations the precedence order of the carret
 		and the ``or'' operator (\verb:\|:) may be different.  That why we
 		enclosed the caret into a group.
-	\item \todo{complete}
+	\addtocounter{enumi}{1}
+	\item Here we add a rule for those characters that are not in the A-Z
+		class, like punctuation marks.  ``Accepting'' a character is done
+		by moving it from the beginning of the \emph{remaining plain text} to
+		the end of the \emph{encrypted text}.
+    \item This is the rule for the rotation, the core of this implementation.
 \end{enumerate}
 
 
