@@ -29,6 +29,10 @@ sedcode toolset fibonacci
 RES=`echo "${LF}x${LF}xx${LF}xxx${LF}xxxx${LF}xxxxx${LF}xxxxxx" | sed "$CODE"`
 expect "${LF}x${LF}x${LF}xx${LF}xxx${LF}xxxxx${LF}xxxxxxxx"
 
+sedcode toolset bitwise-xor
+RES=`echo "10|01${LF}11|10$LF|$LF|0${LF}0|${LF}1|1${LF}000|01" | sed "$CODE"`
+expect "11${LF}1${LF}0${LF}0${LF}0${LF}0${LF}1"
+
 sedcode advancedexamples uniq
 RES=`echo a-a-b-c-c-c | tr - '\n' | sed "$CODE"`; expect "a${LF}b${LF}c"
 RES=`echo "a${LF}a" | sed "$CODE"`; expect a

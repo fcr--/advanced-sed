@@ -144,6 +144,41 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Binary Math}
 
+\begin{description}
+	\item[XOR: $a_n\ldots a_1 a_0\texttt{|}b_m\ldots b_1 b_0 \mapsto
+		c_{\max\{n, m\}}\ldots c_1 c_0$ where $(c_i)=(a_i)\oplus(b_i)$:]$\,$
+
+		Bit-wise XOR between $(a_i)$ and $(b_i)$, assuming as many leading zeros
+		as needed.
+
+		% sedcode bitwise-xor:
+		\begin{Verbatim}
+			s/$/|/
+			:a; s/^|\(.*\)|/\1/; s/||//
+			  s/0|\(.*\)\(.\)|/|\1|\2/
+			  s/1|\(.*\)0|/|\1|1/
+			  s/1|\(.*\)1|/|\1|0/; ta
+			s/^0*//; s/^$/0/
+		\end{Verbatim}
+
+		\begin{enumerate}
+			\item We start by adding a pipe to the end.
+				We will store the result after that pipe.
+			\item At the start of each iteration denoted by the label \verb|:a| we
+				detect the cases where there are no more binary digits left in any
+				of the operands.
+
+				In the following 3 lines we will be processing
+				one bit at a time starting from the right (least significant bit).
+			\item The rule that we apply here $0\oplus x = x$.  We just maintain the
+				least significant bit of the second number.
+			\item Then we consider $1\oplus 0=1$.
+			\item And the other case $1\oplus 1=0$.
+			\item Finally we just remove leading zeroes and place a zero in place of
+				an empty string.
+		\end{enumerate}
+\end{description}
+
 \todo{Write about binary addition.}
 
 \todo{Write about truncation.}
