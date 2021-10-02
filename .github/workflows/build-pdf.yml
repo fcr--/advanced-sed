@@ -25,15 +25,13 @@ jobs:
       - name: Set up Git repository
         uses: actions/checkout@v2
 
-      - name: Install sed
-        run: sudo apt-get install -y sed
+      - name: Run test cases
+        run: bash test.sh
 
       - uses: xu-cheng/texlive-action/small@v1
         with:
           run: |
-            # Run test cases first:
-            bash test.sh
-            # Then disable the \todos command, as it does not work for some reason:
+            # Disable the \todos command, as it does not work for some reason:
             sed -i 's/^\\todos/(disabled on deploy)%\\todos/' index.tex
             # Once to generate the table of contents, the second time to correct the page numbers, and the third time for good measure:
             pdflatex index.tex
