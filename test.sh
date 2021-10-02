@@ -24,7 +24,9 @@ expect() {
   }
 }
 
-busybox  # we want to know the busybox version in case it's being used
+echo $SED
+dpkg -L sed
+busybox  # we may want to know the busybox version in case it's being used
 $SED --version
 
 LF='
