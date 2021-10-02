@@ -33,7 +33,7 @@ commands, `{\tt N}':
 % sedcode uniq:
 \begin{Verbatim}
 p; :a; $d; N
-  s/\(.*\)\n\1$/\1/; ta
+  s/^\(.*\)\n\1$/\1/; ta
   s/.*\n//p; ba
 \end{Verbatim}
 
