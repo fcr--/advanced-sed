@@ -162,9 +162,9 @@ While for the edges:
 	bi;}
 	s/,/!/
 	:a
-	  s/\(<\([^>]*\)!\(x*\)>.*<\2,\([^,]*\)\),\(x*\)>/<\4;\3\5>\1:\5>/
+	  s/\(<\([^>]*\)!\(x*\)>.*<\2,\([^,]*\)\),\(x*>\)/<\4;\3\5\1:\5/;p
 	  ta
-	  y/:!/,./; bi
+	y/:!/,./; bi
 \end{Verbatim}
 
 \todo{explain Dijkstra's algorithm implementation.}
