@@ -42,3 +42,7 @@ RES=`echo | sed "$CODE"`; expect
 sedcode advancedexamples vigenere
 RES=`{ echo LEMON; echo ATTACKATDAWN; } | sed "$CODE"`
 expect LXFOPVEFRNHR
+
+sedcode advancedexamples dijkstra
+RES=`echo '<1,><1,2,xxxx><1,3,x><3,2,xx><2,4,x>' | sed "$CODE"`
+expect '<1.><3.x><2.xxx><4.xxxx><1,2,xxxx><1,3,x><3,2,xx><2,4,x>'
