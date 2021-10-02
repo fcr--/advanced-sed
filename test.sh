@@ -22,6 +22,8 @@ expect() {
   }
 }
 
+sed --version
+
 LF='
 '
 
