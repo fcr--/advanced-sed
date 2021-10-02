@@ -24,10 +24,8 @@ expect() {
   }
 }
 
-echo $SED
-sudo dpkg -L sed
-busybox  # we may want to know the busybox version in case it's being used
-$SED --version
+echo Sed version $SED: `$SED --version`
+# busybox  # Uncomment this line if This is not GNU sed version 4.0
 
 LF='
 '
