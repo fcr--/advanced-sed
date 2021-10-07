@@ -24,7 +24,8 @@ expect() {
   }
 }
 
-echo Sed version $SED: `$SED --version`
+echo Sed version for "$SED":
+$SED --version
 # busybox  # Uncomment this line if This is not GNU sed version 4.0
 
 LF='
@@ -47,6 +48,10 @@ RES=`echo | $SED "$CODE"`; expect
 sedcode advancedexamples vigenere
 RES=`{ echo LEMON; echo ATTACKATDAWN; } | $SED "$CODE"`
 expect LXFOPVEFRNHR
+
+sedcode advancedexamples treeheight
+RES=`echo '[[[[a],5,4]],5,[[],[]]]' | $SED "$CODE"`; expect xxxx
+RES=`echo '[1,[[5],8],10,[3,2],5]' | $SED "$CODE"`; expect xxx
 
 sedcode advancedexamples dijkstra
 RES=`echo '<1,><1,2,xxxx><1,3,x><3,2,xx><2,4,x>' | $SED "$CODE"`

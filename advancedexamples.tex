@@ -120,6 +120,43 @@ text} \verb|<ABC...XYZA>| \emph{remaining plain text} \verb|\n|
     \item This is the rule for the rotation, the core of this implementation.
 \end{enumerate}
 
+\subsection{Height of a Tree}
+
+In this simple example we receive an n-ary tree and return its height in
+unary.  An example input could be \verb|[1,[[5],8],10,[3,2],5]| with the
+corresponding output \verb|xxx|, as it shows 3 nesting levels.
+
+% sedcode treeheight:
+\begin{Verbatim}
+	s/[^],[]//g; s/,,*/,/g; s/^,*//; s/,*$//; s/\[,*/[/g; s/,*\]/]/g
+	:a
+	  s/\[\(x*\)\]/\1x/g
+	  s/\(xx*\)\(x*\),\1\(x*\)/\1\2\3/g
+	  ta
+\end{Verbatim}
+
+The first line just deletes everything but the brackets and commas, and
+it also deletes any redundant comma, de-duplicating and leaving only
+those that separate children, ie: {\tt [],[]}.
+
+Then in the line 3 we handle any node with 0 or 1 child, by converting
+them to their height: one more than that of their child.  Final nodes will
+have height 1.
+
+Finally on the line 4 we calculate the maximum of two consecutive heights
+by substituting them to their maximum.  That way on each substitution we
+will be removing one comma, eventually reaching the case when the line 3
+is applicable on that node.
+
+Since the tree representation is a finite string, it means that there can
+only be a finite number of children.  Note that since we remove any nodes
+but ``arrays'', all the final nodes will always be empty arrays, and so
+it could be defined inductively as follows:
+either a node is an empty array $\texttt{[]}\in N$, or if it is
+composed of children $c_1, \ldots, c_i\in N$ that are also nodes, then
+$\texttt{[}c_1\texttt{,}\ldots\texttt{,}c_i\texttt{]} \in N$.  This is why
+it eventually ends.
+
 \subsection{Dijkstra}
 % Dijkstra:
 We have the following format for the nodes depending on their state:
@@ -168,9 +205,6 @@ While for the edges:
 \end{Verbatim}
 
 \todo{explain Dijkstra's algorithm implementation.}
-
-% echo '|1,|1,2,xxxx|1,3,x|3,2,xx|2,4,x|' | sed ''
-% |1.|3.x|2.xxx|4.xxxx|1,2,xxxx|1,3,x|3,2,xx|2,4,x|
 
 \todo{add more examples}
 
