@@ -116,8 +116,41 @@
 		substituting them leaving only the longest common prefix.  Such a
 		transformation is simply \verb!s/\(x*\)x*|\1x*/\1/!.
 
-	\item\todo{Test and write about maximum}
-	% (tested) Maximum: x^n|x^m -> x^{\max\{n,m\}}: s/\(x*\)|\(\1\(x*\)\|x*\)/\1\3/
+	\item[Maximum: $\texttt{x}^n\texttt{|x}^m \mapsto
+		\texttt{x}^{\max\{n,m\}}$:]
+
+		To fully comprehend how the implementation presented here
+		we need to embrace the fact that \sed uses a greedy algorithm for
+		substitutions. In other words whenever our regular
+		expression is the concatenation of two or more quantified parts, it
+		will try to match as much as possible in the first part, then as
+		much as possible in the second and so on, as long the regex matches.
+
+		When looking at the implementation for minimum we can see that the
+		only difference is that we are capturing and keeping the second and
+		third occurrences of $\texttt{x}^*$:
+
+		% sedcode maximum:
+		\begin{Verbatim}
+			s/\(x*\)\(x*\)|\1\(x*\)/\1\2\3/
+		\end{Verbatim}
+
+		So, since
+		\begin{itemize}
+			\item \verb|\1| captures $\min\{n,m\}$ number of \verb|x|s,
+			\item \verb|\2| captures $n-\min\{n,m\}$ number of \verb|x|s, and
+			\item \verb|\3| captures $m-\min\{n,m\}$ number of \verb|x|s;
+		\end{itemize}
+		then for \verb|\1\2\3|: $n+m-\min\{n,m\}=\max\{n,m\}$.
+
+		Another possibility, though way less elegant, is to abuse the fact
+		that we can assume the greedy behavior for the alternative operator
+		``\verb!\|!'' as well.  If $n<=m$ then \verb|\1\3| will match $n +
+		(m-n)=m$, and if $n>m$, then the second alternative will be selected
+		leaving \verb|\3| empty:
+		\begin{Verbatim}
+			s/\(x*\)|\(\1\(x*\)\|x*\)/\1\3/
+		\end{Verbatim}
 
 	\item[Fibonacci: $\texttt{x}^n\mapsto \texttt{x}^{\fib n}$:]
 
