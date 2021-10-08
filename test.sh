@@ -31,6 +31,10 @@ $SED --version
 LF='
 '
 
+sedcode toolset minimum
+RES=`echo "|${LF}x|$LF|x${LF}x|x${LF}xx|xxx${LF}xxxxx|xxx" | $SED "$CODE"`
+expect "$LF$LF${LF}x${LF}xx${LF}xxx"
+
 sedcode toolset fibonacci
 RES=`echo "${LF}x${LF}xx${LF}xxx${LF}xxxx${LF}xxxxx${LF}xxxxxx" | $SED "$CODE"`
 expect "${LF}x${LF}x${LF}xx${LF}xxx${LF}xxxxx${LF}xxxxxxxx"
