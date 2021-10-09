@@ -26,6 +26,12 @@ expect() {
 
 LF='
 '
+X1=x; X2=x$X1; X3=x$X2; X4=x$X3; X5=x$X4; X6=x$X5; X7=x$X6; X8=x$X7; X9=x$X8
+Y1=y; Y2=y$Y1; Y3=y$Y2; Y4=y$Y3; Y5=y$Y4; Y6=y$Y5; Y7=y$Y6; Y8=y$Y7; Y9=y$Y8
+
+sedcode toolset logarithm
+RES=`echo "$LF$X1$LF$X2$LF$X3$LF$X4$LF$X5$LF$X7$LF$X8$LF$X9" | $SED "$CODE"`
+expect "$LF$LF$Y1$LF$Y1$LF$Y2$LF$Y2$LF$Y2$LF$Y3$LF$Y3"
 
 sedcode toolset minimum
 RES=`echo "|${LF}x|$LF|x${LF}x|x${LF}xx|xxx${LF}xxxxx|xxx" | $SED "$CODE"`
