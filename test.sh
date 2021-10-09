@@ -24,10 +24,6 @@ expect() {
   }
 }
 
-echo Sed version for "$SED":
-$SED --version
-# busybox  # Uncomment this line if This is not GNU sed version 4.0
-
 LF='
 '
 
