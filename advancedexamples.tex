@@ -27,7 +27,7 @@ level programming language like lua:
 %	\caption{Pseudocode for {\tt uniq} in lua 5.}
 %\end{figure}
 
-While the \sed version requires us to introduce one of the least common
+While the \sed* version requires us to introduce one of the least common
 commands, `{\tt N}':
 
 % sedcode uniq:
@@ -68,7 +68,7 @@ next character in the alphabet).  If we use 2 positions, as expected we would
 be substituting {\tt A} to {\tt C}, {\tt B} to {\tt D} and so on:
 {\tt COCBKPI} for the example above.
 
-Such a simple substitution could be trivially performed in \sed with the
+Such a simple substitution could be trivially performed in \sed* with the
 {\tt y} command.
 
 With Vigen\'ere however, the number of rotations varies for each character and

@@ -120,7 +120,7 @@
 		\texttt{x}^{\max\{n,m\}}$:]
 
 		To fully comprehend how the implementation presented here
-		we need to embrace the fact that \sed uses a greedy algorithm for
+		we need to embrace the fact that \sed* uses a greedy algorithm for
 		substitutions. In other words whenever our regular
 		expression is the concatenation of two or more quantified parts, it
 		will try to match as much as possible in the first part, then as
@@ -226,7 +226,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Lookup Tables}
 
-Many of the most complex programs written in \sed use the power of
+Many of the most complex programs written in \sed* use the power of
 backreferences in order to do translations which otherwise could be very
 complex, here we will focus on two very practical use cases, converting from
 decimal numbers to unary and viceversa.
@@ -273,7 +273,7 @@ hacer una substitución arbitraria.}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Debugging}
 
-When developing programs in \sed, more often than not we end up with mountains
+When developing programs in \sed*, more often than not we end up with mountains
 of completely unreadable line noise which at a certain point, sometimes even
 way before to be completed, leaves us in a state of absolute confusion.  Is at
 this point that we really need to understand what's going on.
