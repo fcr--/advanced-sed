@@ -85,13 +85,13 @@ followed by the text to encrypt:
 
 % sedcode vigenere:
 \begin{Verbatim}
-	1{ h; d }
+	1{ h; d; }
 	G; s/\(^\)\|\n/&<ABCDEFGHIJKLMNOPQRSTUVWXYZA>/g
 	:a
 	  s/\(<[A-Z]*>\)\([^A-Z]\)\(.*\n\)/\2\1\3/
 	  s/\(<.*\(.\)\(.\).*>\)\2\(.*<.*\(.\)\(.\).*>\)\6/\1\3\4\5/
 	  /\n<.*>A/  s/\(<.*>\)\(.\)\(.*>\)./\2\1\3/
-	  />$/{ G; s/>\n/>/ }
+	  />$/{ G; s/>\n/>/; }
 	  ta
 	s/<.*//
 \end{Verbatim}
