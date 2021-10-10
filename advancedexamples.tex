@@ -206,6 +206,54 @@ While for the edges:
 
 \todo{explain Dijkstra's algorithm implementation.}
 
+\subsection{Labyrinth Solver}
+
+% stuff to mention when documenting:
+% * we traverse in BFS,
+% * we added a space before the dollar sign both to simplify the code and to
+%   have a space where we can leave the final breadcrumb.
+% * just before the `y' command, if the set of new nodes when doing the BFS
+%   traversal is empty, it would mean that we reached a fixed point.  This
+%   would usually mean that there is no solution; though there's the exception
+%   that the caret and the dollar sign are next to each other without empty
+%   space sorounding the caret... that's why we do that /[^ ]\$/ check.
+
+\begin{Verbatim}
+	#### Loading the labyrinth: ####
+	1s/^/\n/; :i;$!{N;bi;}
+	s/\$/ &/
+	#### Leaving breadcrumbs with the directions to turn back: ####
+	:s
+	  s/\([A-Z^]\) \(\$*\)/\1e\2/g
+	  s/ \(\$*[A-Z^]\)/w\1/g
+	  s/\n/&c/g
+	  :r
+	    s/c \([^c]*c[A-Z^]\)/cn\1/g
+	    s/\(c[A-Z^][^c]*\)c /\1cs/g
+	    s/c\(.\$*\)/\1c/g; s/c\n/\n/g; s/c$//
+	    /c/br
+	  /[a-z]/!{ /[^ ]\$/bm; s/.*/insolvable/; q; }
+	  y/nsew/NSEW/
+	  / \$/bs
+	#### Going back home!: ####
+	:m
+	  s/E\$/\$o/
+	  s/W\$\(.\)/o\1\$/
+	  s/\n/&c/g
+	  :R
+	    s/c\(.\)\([^c]*\)cS\$/c\1$\2co/
+	    s/cN\$\([^c]*c.\)/co\1\$/
+	    s/c\(.\$*\)/\1c/g
+	    s/c\n/\n/g; s/c$//; /c/bR
+	  /\^\$/!bm
+	#### Cleanup, job done! ####
+	s/[A-Z]/ /g; s/\$//
+\end{Verbatim}
+
+\todo{explain labyrinth solver...}
+
+\todo{test labyrinth solver}
+
 \todo{add more examples}
 
 % another advanced example could be a program to select child elements from
