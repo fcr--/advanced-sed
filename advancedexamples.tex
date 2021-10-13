@@ -178,12 +178,14 @@ followed by the edges, all concatenated together in a single line, e.g.,
 	<s,><s,a,xxx><a,b,xx><s,b,xxxxxx>
 \end{Verbatim}
 
-Note that the costs are encoded in unary with {\tt x}s.
-See section \ref{sec:unarymath}.
+Note that the costs both for nodes and edges are encoded with a series
+of {\tt x}s in unary.  See section \ref{sec:unarymath} for more
+information on how to operate with them.
 
 
 % Dijkstra:
-We have the following format for the nodes depending on their state:
+In order to represent the node structures, we use the following format
+which varies depending on their state:
 \begin{center}
 	\begin{tabular}{|l|l|}
 		\hline
