@@ -158,6 +158,30 @@ $\texttt{[}c_1\texttt{,}\ldots\texttt{,}c_k\texttt{]} \in N$.  This is why
 it eventually ends.
 
 \subsection{Dijkstra}
+
+The goal of Dijkstra's algorithm is to find the shortest path (and its
+cost) towards each reachable node in a graph starting from a designated
+source node.  The cost, being an attribute of the edges gives an
+indication of how expensive is to use it as part of the path.  Thus
+finding the shortest path implies finding the path where the sum of
+the costs of each used edge is the lowest one.
+
+Here instead of the path we will only find the cost towards each node.
+Yet it wouldn't be that difficult to modify the program
+to store the path as well (as an additional node field), so it is left
+as an exercise to the reader.
+
+The expected input should be composed of a starting node structure
+followed by the edges, all concatenated together in a single line, e.g.,
+
+\begin{Verbatim}
+	<s,><s,a,xxx><a,b,xx><s,b,xxxxxx>
+\end{Verbatim}
+
+Note that the costs are encoded in unary with {\tt x}s.
+See section \ref{sec:unarymath}.
+
+
 % Dijkstra:
 We have the following format for the nodes depending on their state:
 \begin{center}

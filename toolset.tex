@@ -4,6 +4,17 @@
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Unary Math}
+\label{sec:unarymath}
+Us humans are used to representing numbers in decimal, 0, 1, 9 for the ten
+first numbers, followed by 10 to 19, 20 to 29... 90 to 99, then 100 and so
+on; yet at early childhood we use our fingers to represent numbers, depending
+on the culture we open or close as many fingers as the number we want to
+represent.
+
+Here in \sed* we will thus represent unary numbers by means of a string
+composed of a single character repeated as many times as the number being
+represented.  \sed* support for transformations based on Regular Expressions
+makes working with them quite easy, as we will see here.
 
 \begin{description}
 	\item[Addition: $x^ny^m\mapsto x^{n+m}$:]
