@@ -157,6 +157,7 @@ composed of children $c_1, \ldots, c_k\in N$ that are also nodes, then
 $\texttt{[}c_1\texttt{,}\ldots\texttt{,}c_k\texttt{]} \in N$.  This is why
 it eventually ends.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Dijkstra}
 
 The goal of Dijkstra's algorithm is to find the shortest path (and its
@@ -214,15 +215,40 @@ While for the edges:
 	\end{tabular}
 \end{center}
 
+So, if we look at the whole program we can see that its outer layer is a
+``while true'' with the initial instruction setting up the label \verb|i|,
+and the last being an unconditional jump to it.
+
+Inside, the code is composed of 3 main parts, the first one is an ``if''
+between lines 2 and 9 that is triggered whenever there are no more nodes
+to iterate: when that happens we do some bookkeeping with the nodes,
+removing duplicated entries (we keep the ones with smaller cost
+plus some additional considerations).
+
+The second part at line 10 is selecting the next node to iterate.
+
+And the final and most important part, at lines 11 to 13 is in charge of
+calculating the new set of reachable nodes from the selected node with
+the newer costs.
+
+Since costs are always non-negative, at some point the new nodes will
+not be able to improve the already calculated costs for each reachable
+node, thus the program will always end.
+% After line 7, nodes can only have the .  The program will end at line 8 when no new
+% nodes added at the previous iteration were left after the de-duplication
+% loop at lines 3 to 7.
+
 % sedcode dijkstra:
 \begin{Verbatim}
-	:i; /<[^>,]*,x*>/!{
+	:i
+	/<[^>,]*,x*>/!{
 	  :m
-	  s/\(<[^;>]*\;x*>\)\(<[^.>]*\.x*>\)/\2\1/
-	  s/<\([^.;>]*\)[.;]\(x*\)xx*>\(.*<\1;\2>\)/\3/
-	  s/\(<\([^,;>]*\)[;.]\(x*\)>.*\)<\2;\3x*>/\1/; tm
+	    s/\(<[^;>]*;x*>\)\(<[^.>]*\.x*>\)/\2\1/
+	    s/<\([^.;>]*\)[.;]\(x*\)xx*>\(.*<\1;\2>\)/\3/
+	    s/\(<\([^,;>]*\)[;.]\(x*\)>.*\)<\2;\3x*>/\1/
+	  tm
 	  /;/!q; y/;/,/
-	bi;}
+	}
 	s/,/!/
 	:a
 	  s/\(<\([^>]*\)!\(x*\)>.*<\2,\([^,]*\)\),\(x*>\)/<\4;\3\5\1:\5/
@@ -230,8 +256,74 @@ While for the edges:
 	y/:!/,./; bi
 \end{Verbatim}
 
-\todo{explain Dijkstra's algorithm implementation.}
+\begin{enumerate}
+	\item We use the label `\verb|i|' for the main loop.  This point is
+		reached after a node has been processed by the lines 10 to 14.
+	\item This ``if'' is selected whenever there are no nodes to iterate
+		(marked with a comma).  Since any selected node (at line 10) gets
+		always marked as iterated at line 14, we will only have to deal
+		with those marked as new `\verb|;|' or as iterated `\verb|.|'.
+	\addtocounter{enumi}{1}
+	\item In case there is any iterated `\verb|.|' node immediately before
+		a new `\verb|;|' one, this substitution will swap them.  By means
+		of executing this substitution as long as applicable, it will
+		eventually enforce a partial order where the iterated nodes will all
+		of them appear before the new ones.
+		We do this in order to simplify the following rules.
+	\item Right Preference Rule: Given two nodes with the same name, if
+		the one from the right has strictly less cost than the other, we
+		choose the right (new) node.
+	\item Left Preference Rule: Once again, given two nodes with the same name,
+		if the left one has the least or same cost, it will be selected.
+	\item Keep applying the previous substitutions while at least one of
+		them matches.  It can be shown that no matter how
+		many new nodes get added at line 12, after this line, there will
+		not be two nodes with the same name.
+	\item We end the BFS traversal when after a whole iteration of the
+		program we ended up with no new nodes being left after de-duplication.
+		If instead there were new nodes we mark them as to iterate `\verb|,|'
+		and proceed.
+	\addtocounter{enumi}{1}
+	\item Select a node (of those marked as to iterate).  We know this
+		substitution will work because either the code didn't went through
+		the ``if'' at lines 2 to 9, or if it went, then the program didn't
+		finish at line 8, meaning that there are nodes to iterate.
+	\addtocounter{enumi}{1}
+	\item This line is more or less the core of the program and its complexity
+		makes it require a bit more in-depth explanation.
 
+		Its goal is to match one of the edges of the selected node, mark the
+		edge as visited, and create a new node structure with the name of the
+		edge target (one of the selected node's neighbors) setting its cost
+		to the sum of the cost of the edge plus the cost of the selected
+		node itself.
+
+		We have 5 groups to deal with:
+		\begin{enumerate}
+			\item[1] Matches all the text of the selected node up to (but
+				excluding) the last comma of the edge we are working with.
+				We use this group only once at the end, just to maintain the
+				text we are matching.
+			\item[2] The name of the selected node.
+			\item[3] The cost of the selected node.
+			\item[4] The target node's name of the edge we are matching.
+			\item[5] The cost of the edge being matched (plus the \verb|>|
+				just to save a couple of characters so that the code enters
+				in the frame).
+		\end{enumerate}
+
+		Finally we can see the new node being created with the sum of the costs
+		at \verb|<\4;\3\5|.
+
+	\item We have to apply the previous substitution for all the outgoing
+		edges of the selected node.
+	\item Not having any remaining edges on the selected node to process, means
+		that we can safely mark the node as iterated and go back to the
+		beginning of the program, either to grab the next iterable node or
+		to do the de-duplication part (possibly ending the program).
+\end{enumerate}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Labyrinth Solver}
 
 % stuff to mention when documenting:
